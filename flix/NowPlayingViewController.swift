@@ -11,10 +11,12 @@ import AlamofireImage
 class NowPlayingViewController: UIViewController, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    
+
+   
     var movies : [[String: Any]] = []
     var refreshControl : UIRefreshControl!
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,11 +26,14 @@ class NowPlayingViewController: UIViewController, UITableViewDataSource {
         tableView.insertSubview(refreshControl, at: 0)
         tableView.dataSource = self
         tableView.rowHeight = 200
+        
+        
         fetchMovies()
         // Do any additional setup after loading the view.
     }
     @objc func didPullToRefresh(_ refreshControl: UIRefreshControl){
-       
+        activityIndicator.startAnimating()
+
         fetchMovies()
     }
     
@@ -44,6 +49,7 @@ class NowPlayingViewController: UIViewController, UITableViewDataSource {
                 let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                 let movies = dataDictionary["results"] as! [[String: Any]]
                 self.movies = movies
+                self.activityIndicator.stopAnimating()
                 self.tableView.reloadData()
                 self.refreshControl.endRefreshing()
                 // TODO: Get the array of movies
