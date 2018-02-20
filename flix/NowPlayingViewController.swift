@@ -13,11 +13,13 @@ class NowPlayingViewController: UIViewController, UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView!
     
     var movies : [[String: Any]] = []
+    var refreshControl : UIRefreshControl!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let refreshControl = UIRefreshControl()
+        refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(NowPlayingViewController.didPullToRefresh(_:)), for: .valueChanged)
         tableView.insertSubview(refreshControl, at: 0)
         tableView.dataSource = self
@@ -26,6 +28,7 @@ class NowPlayingViewController: UIViewController, UITableViewDataSource {
         // Do any additional setup after loading the view.
     }
     @objc func didPullToRefresh(_ refreshControl: UIRefreshControl){
+       
         fetchMovies()
     }
     
@@ -42,7 +45,7 @@ class NowPlayingViewController: UIViewController, UITableViewDataSource {
                 let movies = dataDictionary["results"] as! [[String: Any]]
                 self.movies = movies
                 self.tableView.reloadData()
-                
+                self.refreshControl.endRefreshing()
                 // TODO: Get the array of movies
                 // TODO: Store the movies in a property to use elsewhere
                 // TODO: Reload your table view data
